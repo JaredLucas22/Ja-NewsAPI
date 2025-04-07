@@ -5,5 +5,6 @@ module.exports = {
   countryID: 'country=us&',
   apiKey: 'apiKey=332ea7c9b6e842d39be07826ebbe1035',
   sources: '&sources=',
-  search: '&q='
-}
+  search: '&q=',
+  defaultCountry: 'us' // New configuration for default country
+};
