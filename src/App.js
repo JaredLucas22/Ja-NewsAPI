@@ -32,14 +32,17 @@ class App extends Component {
 
   componentDidMount() {
     axios
-      .get(URL.sourcesURL + URL.apiKey)
-      .then(response => {
-        console.log(response.data)
-        let { data } = response
+      .get('/api/sources') // Use the serverless API endpoint
+      .then((response) => {
+        console.log(response.data);
+        const { sources } = response.data;
         this.setState({
-          sources: data.sources,
-        })
+          sources: sources,
+        });
       })
+      .catch((error) => {
+        console.error('Error fetching sources:', error);
+      });
   }
 
   render() {
