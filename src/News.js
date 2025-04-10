@@ -1,6 +1,5 @@
-import React, { Component } from 'react'
-import axios from 'axios'
-import URL from './config'
+import React, { Component } from 'react';
+import axios from 'axios';
 import './combined-styles.css'; // Corrected the path to the combined CSS file
 
 import PropTypes from 'prop-types';
@@ -12,18 +11,18 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 
 class News extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       articles: [],
-      source: props.source
-    }
+      source: props.source,
+    };
   }
 
   render() {
-    let { articles, source } = this.state
-    const { classes } = this.props
+    const { articles, source } = this.state;
+    const { classes } = this.props;
 
-    if (source != this.props.source) this.reloadSource()
+    if (source !== this.props.source) this.reloadSource();
     return (
       <div className={classes.root}>
         <GridList cellHeight={180} className={classes.gridList} cols={4}>
@@ -44,7 +43,7 @@ class News extends Component {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn"
-                    style={{ marginRight: '10px' }} // Add margin-right to move the button left
+                    style={{ marginRight: '10px' }}
                   >
                     Read More
                   </a>
@@ -66,7 +65,7 @@ class News extends Component {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="btn"
-                    style={{ marginRight: '10px' }} // Add margin-right to move the button left
+                    style={{ marginRight: '10px' }}
                   >
                     Read More
                   </a>
@@ -78,23 +77,30 @@ class News extends Component {
       </div>
     );
   }
+
   componentDidMount() {
-    this.reloadSource()
+    this.reloadSource();
   }
 
   reloadSource() {
+    const { source } = this.props;
+
     axios
-      .get(URL.topHeadlinesURL + URL.apiKey + URL.sources + this.props.source)
-      .then(response => {
-        console.log(response.data)
-        let { data } = response
+      .get(`/api/news?source=${source}`) // Use the serverless API endpoint
+      .then((response) => {
+        const { articles } = response.data;
         this.setState({
-          articles: data.articles
-        })
+          articles: articles,
+          source: source, // Update the state to match the current source
+        });
       })
+      .catch((error) => {
+        console.error('Error fetching news:', error);
+      });
   }
 }
-const styles = theme => ({
+
+const styles = (theme) => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',

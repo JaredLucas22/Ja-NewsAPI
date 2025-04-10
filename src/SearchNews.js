@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import URL from './config';
 import './combined-styles.css'; // Replace with the new combined CSS file
 
 class SearchNews extends Component {
@@ -43,12 +42,15 @@ class SearchNews extends Component {
   }
 
   reloadSearch() {
+    const { search } = this.props;
+
     axios
-      .get(URL.everythingURL + URL.apiKey + URL.search + this.props.search)
+      .get(`/api/search?query=${search}`) // Use the serverless API endpoint
       .then((response) => {
         const { articles } = response.data;
         this.setState({
           articles: articles,
+          search: search, // Update the state to match the current search term
         });
       })
       .catch((error) => {

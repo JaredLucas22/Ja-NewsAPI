@@ -97,7 +97,7 @@ class Headlines extends Component {
 
   componentDidMount() {
     axios
-      .get(URL.topHeadlinesURL + URL.countryID + URL.apiKey)
+      .get('/api/headlines') // Use the serverless API endpoint
       .then((response) => {
         const { data } = response;
         this.setState({
