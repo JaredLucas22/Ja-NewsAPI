@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import '../components/styles/combined-styles.css'; // Ensure the correct file extension for the CSS file
-import ReadMoreButton from '../components/buttons/ReadMoreButton.js'; // Ensure the correct file extension for the JavaScript file
-import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
-import GridListTileBar from '@material-ui/core/GridListTileBar';
-import ListSubheader from '@material-ui/core/ListSubheader';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardMedia from '@material-ui/core/CardMedia';
+import CardContent from '@material-ui/core/CardContent';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import ReadMoreButton from '../components/buttons/ReadMoreButton';
+import PropTypes from 'prop-types';
 
 class Headlines extends Component {
   constructor(props) {
@@ -17,100 +18,64 @@ class Headlines extends Component {
     };
   }
 
+  componentDidMount() {
+    axios
+      .get('/api/headlines')
+      .then((response) => {
+        const { articles } = response.data;
+        this.setState({ articles });
+      })
+      .catch((error) => {
+        console.error('Error fetching headlines:', error);
+      });
+  }
+
   render() {
     const { articles } = this.state;
     const { classes } = this.props;
 
     return (
       <div className={classes.root}>
-        <GridList cellHeight={210} className={classes.gridList} cols={3}>
-          <GridListTile key="Subheader" cols={3} style={{ height: 'auto' }}>
-            <ListSubheader component="div">Top Headlines</ListSubheader>
-          </GridListTile>
-
-          {/* Featured Headline */}
-          {articles[0] && (
-            <GridListTile key={articles[0].urlToImage} cols={3} rows={2}>
-              <img src={articles[0].urlToImage} alt={articles[0].title} />
-              <GridListTileBar
-                title={articles[0].title}
-                subtitle={
-                  <span>
-                    by: {articles[0].source.name}
-                    {articles[0].category && (
-                      <span style={{ marginLeft: '10px', fontStyle: 'italic' }}>
-                        Category: {articles[0].category}
-                      </span>
-                    )}
-                  </span>
-                }
-                actionIcon={
-                  <ReadMoreButton article={articles[0]} /> 
-                }
-              />
-            </GridListTile>
-          )}
-
-          {/* Smaller Headlines */}
-          {articles.slice(3).map((article) => (
-            <GridListTile key={article.urlToImage} cols={1} rows={2}>
-              <img src={article.urlToImage} alt={article.title} />
-              <GridListTileBar
-                title={article.title}
-                subtitle={
-                  <span>
-                    by: {article.source.name}
-                    {article.category && (
-                      <span style={{ marginLeft: '10px', fontStyle: 'italic' }}>
-                        Category: {article.category}
-                      </span>
-                    )}
-                  </span>
-                }
-                actionIcon={
-                  <ReadMoreButton article={article} />
-                }
-              />
-            </GridListTile>
+        <Grid container spacing={3}>
+          {articles.map((article) => (
+            <Grid item xs={12} sm={6} md={4} key={article.url}>
+              <Card className={classes.card}>
+                <CardActionArea>
+                  <CardMedia
+                    className={classes.media}
+                    image={article.urlToImage || 'https://via.placeholder.com/150'}
+                    title={article.title}
+                  />
+                  <CardContent>
+                    <Typography gutterBottom variant="h6" component="h2">
+                      {article.title}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary" component="p">
+                      {article.description}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+                <ReadMoreButton article={article} />
+              </Card>
+            </Grid>
           ))}
-        </GridList>
+        </Grid>
       </div>
     );
-  }
-
-  componentDidMount() {
-    axios
-      .get('/api/headlines') // Use the serverless API endpoint
-      .then((response) => {
-        const { data } = response;
-        this.setState({
-          articles: data.articles,
-        });
-      })
-      .catch((error) => {
-        console.error('Error fetching headlines:', error);
-      });
   }
 }
 
 const styles = {
-  body: {
-    overflow: 'hidden',
-  }, 
-
   root: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
-    overflow: 'hidden',
-    backgroundColor: '#f5f5f5', // Fixed background color
+    padding: '20px',
+    backgroundColor: '#f5f5f5',
   },
-  gridList: {
-    width: 1300,
-    height: 1500,
+  card: {
+    maxWidth: 345,
+    margin: 'auto',
   },
-  icon: {
-    color: 'rgba(255, 255, 255, 0.54)',
+  media: {
+    height: 140,
   },
 };
 

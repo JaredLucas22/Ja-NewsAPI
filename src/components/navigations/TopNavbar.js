@@ -10,14 +10,14 @@ import debounce from 'lodash.debounce';
 const TopNavbar = ({ searchValue, onSearchChange }) => {
   // Debounce the onSearchChange handler
   const debouncedSearchChange = useCallback(
-    debounce((value) => onSearchChange(value), 300),
+    debounce((value) => onSearchChange(value)),
     [onSearchChange]
   );
 
   // Handle input change and pass the value to the debounced function
   const handleInputChange = (event) => {
     const { value } = event.target;
-    debouncedSearchChange(value);
+    debouncedSearchChange(value); // Pass only the value
   };
 
   return (
@@ -26,7 +26,7 @@ const TopNavbar = ({ searchValue, onSearchChange }) => {
         <Typography variant="h6" style={{ color: '#fff', marginRight: '16px' }}>
           JNews | Dary
         </Typography>
-        <div style={{ flexGrow: 1 }}></div> {/* Spacer to push the search bar to the right */}
+        <div style={{ flexGrow: 1 }}></div> 
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ position: 'relative' }}>
             <SearchIcon
